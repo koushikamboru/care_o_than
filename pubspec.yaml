@@ -1,0 +1,51 @@
+name: care_o_than
+description: A new Flutter project for ABHA Onboarding.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.1 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # iOS styled icons
+  cupertino_icons: ^1.0.6
+
+  # QR Code scanner dependency
+  qr_code_scanner: ^0.4.0
+
+  # HTTP requests
+  http: ^0.13.3
+
+  # State management
+  provider: ^6.0.0
+
+  # Logging package
+  logging: ^1.0.2
+
+  # Local storage for saving data
+  shared_preferences: ^2.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Lint rules for Flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Add assets or images here in the future if needed
+  # assets:
+  #   - assets/images/
+  
+  # You can define custom fonts if required
+  # fonts:
+  #   - family: CustomFont
+  #     fonts:
+  #       - asset: fonts/CustomFont-Regular.ttf

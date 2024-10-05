@@ -12,8 +12,9 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
   String _phoneNumber = '';
   String _email = '';
-  
-  final _logger = Logger('ProfileUpdateScreen');
+
+  // Initialize logger
+  final Logger _logger = Logger('ProfileUpdateScreen');
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +53,7 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    // Now use _phoneNumber and _email to update the profile
-                    updateProfile();
+                    _updateProfile();
                   }
                 },
                 child: const Text('Update'),
@@ -65,9 +65,9 @@ class ProfileUpdateScreenState extends State<ProfileUpdateScreen> {
     );
   }
 
-  void updateProfile() {
-    // Use _phoneNumber and _email to make API call
+  void _updateProfile() {
+    // Log the values of phoneNumber and email
     _logger.info('Updating profile with phone: $_phoneNumber and email: $_email');
-    // Add your API call logic here
+    // Add your API logic here
   }
 }

@@ -10,12 +10,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(  // Removed `const` here
-      title: 'Care-o-Than',
+    return MaterialApp(
+      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const RegistrationScreen(),  // This can still be `const`
+      home: const RegistrationScreen(),  // Assuming this is your home screen
     );
   }
 }
