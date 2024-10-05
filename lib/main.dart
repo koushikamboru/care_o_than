@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/registration_screen.dart';  // Assuming you have this screen
+import 'screens/registration_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,11 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Aadhaar Verification App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const RegistrationScreen(),  // Assuming this is your home screen
+      debugShowCheckedModeBanner: false,
+      home: const RegistrationScreen(),
     );
   }
 }

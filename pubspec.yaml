@@ -11,7 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  encrypt: ^5.0.0
+  pointycastle: ^3.4.0
+  
   # iOS styled icons
   cupertino_icons: ^1.0.6
 

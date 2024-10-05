@@ -1,72 +1,82 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:encrypt/encrypt.dart' as encrypt;
-import 'package:pointycastle/asymmetric/api.dart'; // Import for RSAPublicKey
 
 class ApiService {
-  static const String _baseUrl = 'https://abhasbx.abdm.gov.in/abha/api';
-  String? _accessToken;
-  String? _refreshToken;
+  static const String baseUrl = 'https://dev.abdm.gov.in/api';
+  static const String clientId = 'SBXTEST_04';
+  static const String clientSecret = 'df5d0805-20e4-4d74-ac07-b52e2beab1fd';
 
-  // Set your clientId and clientSecret here
-  final String clientId = 'YOUR_CLIENT_ID';
-  final String clientSecret = 'YOUR_CLIENT_SECRET';
-
-  Future<void> generateSessionToken() async {
-    final url = Uri.parse('https://dev.abdm.gov.in/api/hiecm/gateway/v3/sessions');
+  // Fetch Token
+  static Future<String> fetchToken() async {
     final response = await http.post(
-      url,
+      Uri.parse('$baseUrl/hiecm/gateway/v3/sessions'),
       headers: {
         'Content-Type': 'application/json',
+        'REQUEST-ID': 'fab678ba-23be-4554-a889-a4cd8b0f40f7',
+        'TIMESTAMP': DateTime.now().toIso8601String(),
+        'X-CM-ID': 'sbx',
       },
       body: jsonEncode({
         'clientId': clientId,
         'clientSecret': clientSecret,
+        'grantType': 'client_credentials',
       }),
     );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      _accessToken = data['accessToken'];
-      _refreshToken = data['refreshToken'];
+      return data['accessToken'];
     } else {
-      throw Exception('Failed to generate session token');
+      throw Exception('Failed to fetch token');
     }
   }
 
-  String? get accessToken => _accessToken;
-  String? get refreshToken => _refreshToken;
+  // Send Aadhaar OTP
+  static Future<String> sendAadhaarOtp(String aadhaarNumber) async {
+    String token = await fetchToken();
 
-  Future<String?> getPublicKey() async {
-    final url = Uri.parse('$_baseUrl/v3/profile/public/certificate');
-    final response = await http.get(url);
+    final response = await http.post(
+      Uri.parse('$baseUrl/v3/enrollment/request/otp'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'aadhaar': aadhaarNumber,  // Encrypt the Aadhaar number before sending
+        'purpose': 'verification',
+      }),
+    );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return data['publicKey'];
+      return data['txnId'];  // Return the transaction ID
     } else {
-      throw Exception('Failed to get public key');
+      throw Exception('Failed to send OTP');
     }
   }
 
-  Future<String> encryptData(String data, String publicKey) async {
-    final parser = encrypt.RSAKeyParser();
-    final rsaPublicKey = parser.parse(publicKey) as RSAPublicKey; // Correct casting using pointycastle RSAPublicKey
-    final encrypter = encrypt.Encrypter(encrypt.RSA(publicKey: rsaPublicKey));
-    final encrypted = encrypter.encrypt(data);
-    return encrypted.base64;
-  }
+  // Verify Aadhaar OTP and Mobile Number
+  static Future<bool> verifyAadhaarOtp(String txnId, String mobileNumber, String otp) async {
+    String token = await fetchToken();
 
-  Future<http.Response> postWithAuth(String endpoint, Map<String, dynamic> body) async {
-    final url = Uri.parse('$_baseUrl/$endpoint');
-    return await http.post(
-      url,
+    final response = await http.post(
+      Uri.parse('$baseUrl/v3/enrollment/enrol/byAadhar'),
       headers: {
-        'Authorization': 'Bearer $_accessToken',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(body),
+      body: jsonEncode({
+        'otp': otp,  // Encrypt the OTP before sending
+        'txnId': txnId,
+        'mobile': mobileNumber,
+      }),
     );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['status'] == 'success';
+    } else {
+      return false;
+    }
   }
 }
-
