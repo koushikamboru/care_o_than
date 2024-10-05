@@ -19,12 +19,12 @@ class OtpLoginScreenState extends State<OtpLoginScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
-        String publicKey = await _apiService.getPublicKey();
-        String encryptedOtp = await _apiService.encryptData(_otpController.text, publicKey);
+        //String publicKey = await _apiService.getPublicKey();
+       // String encryptedOtp = await _apiService.encryptData(_otpController.text, publicKey);
 
         // Call the API to verify OTP
         final response = await _apiService.postWithAuth('v3/login/otp/verify', {
-          'otp': encryptedOtp,
+          //'otp': encryptedOtp,
           'otpSystem': 'aadhaar'
         });
 

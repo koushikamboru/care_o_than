@@ -20,13 +20,13 @@ class RegistrationScreenState extends State<RegistrationScreen> {
       _formKey.currentState!.save();
       try {
         await _apiService.generateSessionToken();
-        String publicKey = await _apiService.getPublicKey();
-        String encryptedAadhaar = await _apiService.encryptData(_aadhaarController.text, publicKey);
+        //String publicKey = await _apiService.getPublicKey();
+        //String encryptedAadhaar = await _apiService.encryptData(_aadhaarController.text, //publicKey);
 
         // Call the API to request OTP for Aadhaar
         final response = await _apiService.postWithAuth('v3/enrollment/request/otp', {
           'loginHint': 'aadhaar',
-          'loginId': encryptedAadhaar,
+          //'loginId': encryptedAadhaar,
           'otpSystem': 'aadhaar'
         });
 
